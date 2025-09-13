@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galerie Artistique</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Fond animé -->
+  <div id="animated-bg"></div>
+
+  <!-- Header -->
+  <header>
+    <h1>Galerie de Dessins</h1>
+    <nav>
+      <a href="#galerie">Galerie</a>
+      <a href="#apropos">À propos</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Contenu principal -->
+  <main>
+    <!-- Galerie -->
+    <section id="galerie">
+      <h2>Mes dessins</h2>
+      <div class="gallery">
+        <img src="images/dessin1.png" alt="Dessin 1 - Portrait manga">
+        <img src="images/dessin2.png" alt="Dessin 2 - Illustration au feutre">
+        <img src="images/dessin3.png" alt="Dessin 3 - Croquis au crayon">
+        <img src="images/dessin4.png" alt="Dessin 4 - Scène manga en noir et blanc">
+        <img src="images/dessin5.png" alt="Dessin 5 - Personnage original">
+        <img src="images/dessin6.png" alt="Dessin 6 - Illustration en couleurs vives">
+        <img src="images/dessin7.png" alt="Dessin 7 - Fanart manga">
+        <img src="images/dessin8.png" alt="Dessin 8 - Portrait détaillé">
+        <img src="images/dessin9.png" alt="Dessin 9 - Illustration d’action">
+        <img src="images/dessin10.png" alt="Dessin 10 - Dessin au crayon">
+        <img src="images/dessin11.png" alt="Dessin 11 - Illustration style manga">
+        <img src="images/dessin12.png" alt="Dessin 12 - Scène de combat">
+        <img src="images/dessin13.png" alt="Dessin 13 - Portrait féminin">
+        <img src="images/dessin14.png" alt="Dessin 14 - Portrait masculin">
+        <img src="images/dessin15.png" alt="Dessin 15 - Illustration au feutre à alcool">
+      </div>
+    </section>
+
+    <!-- Soutien -->
+    <section id="soutien">
+      <h2>Soutenir mon travail</h2>
+      <p>Si vous aimez mes dessins et souhaitez m'aider à continuer, vous pouvez me soutenir via PayPal.</p>
+      <a class="btn-soutien" href="https://paypal.me/FelixVans" target="_blank" rel="noopener">Soutenir Felix</a>
+    </section>
+
+    <!-- À propos -->
+    <section id="apropos">
+      <h2>À propos de l'artiste</h2>
+      <p>Salut — je suis Felix, illustrateur basé à Robion. Je crée des dessins autour du manga en utilisant feutres à alcool, crayons de couleur et liners.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Felix</p>
+  </footer>
+
+  <!-- Lightbox -->
+  <div id="lightbox" style="display:none;">
+    <span id="lightbox-close">&times;</span>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  <script>
+    // Fond animé
+    window.addEventListener('DOMContentLoaded', function() {
+      const canvas = document.createElement('canvas');
+      canvas.id = 'bg-canvas';
+      canvas.style.position = 'fixed';
+      canvas.style.top = 0;
+      canvas.style.left = 0;
+      canvas.style.width = '100vw';
+      canvas.style.height = '100vh';
+      canvas.style.zIndex = 0;
+      canvas.style.pointerEvents = 'none';
+      document.getElementById('animated-bg').appendChild(canvas);
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      const ctx = canvas.getContext('2d');
+      const particles = [];
+      const colors = ['#ffb347', '#6aafe6', '#f67280', '#355c7d', '#fff', '#222'];
+      for (let i = 0; i < 60; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: 8 + Math.random() * 18,
+          dx: -0.5 + Math.random(),
+          dy: -0.5 + Math.random(),
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 0.2 + Math.random() * 0.5
+        });
+      }
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (const p of particles) {
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
+          ctx.fillStyle = p.color;
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 16;
+          ctx.fill();
+          ctx.restore();
+          p.x += p.dx;
+          p.y += p.dy;
+          if (p.x < -30) p.x = canvas.width + 30;
+          if (p.x > canvas.width + 30) p.x = -30;
+          if (p.y < -30) p.y = canvas.height + 30;
+          if (p.y > canvas.height + 30) p.y = -30;
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+
+    // Lightbox
+    document.addEventListener("DOMContentLoaded", () => {
+      const images = document.querySelectorAll(".gallery img");
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+      const closeBtn = document.getElementById("lightbox-close");
+
+      images.forEach(img => {
+        img.addEventListener("click", () => {
+          lightboxImg.src = img.src;
+          lightboxImg.alt = img.alt;
+          lightbox.style.display = "flex";
+          document.body.style.overflow = "hidden";
+        });
+      });
+
+      function closeLightbox() {
+        lightbox.style.display = "none";
+        document.body.style.overflow = "";
+        lightboxImg.src = "";
+      }
+
+      closeBtn.addEventListener("click", closeLightbox);
+      lightbox.addEventListener("click", e => { if (e.target === lightbox) closeLightbox(); });
+    });
+  </script>
+</body>
+</html>
